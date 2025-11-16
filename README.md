@@ -67,7 +67,7 @@ NOTEAPP/
 ### 1️⃣ Clone dự án
 
 ```sh
-git clone <URL>
+git clone https://github.com/daoson-ui/NoteApp.git
 cd NOTEAPP
 ```
 
