@@ -52,6 +52,12 @@
                value="{{ request.args.get('q','') }}" class="form-control" style="width: 180px; font-size: 14px; padding: 5px;">
         <input type="date" name="date" 
                value="{{ request.args.get('date','') }}" class="form-control" style="width: 150px; font-size: 14px; padding: 5px;">
+        <select name="tag" class="form-select" style="width: 150px; font-size: 14px; padding: 5px;">
+            <option value="">All Tags</option>
+            {% for tag in tags_all %}
+            <option value="{{ tag.id }}" {% if selected_tag_id == tag.id %}selected{% endif %}>{{ tag.name }}</option>
+            {% endfor %}
+        </select>
         <button type="submit" class="btn btn-primary fw-bold" style="font-size: 14px; padding: 5px 10px;">Search</button>
     </form>
 
