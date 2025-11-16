@@ -3,28 +3,55 @@
 {% block title %}Register{% endblock %}
 
 {% block content %}
-<h2>Register</h2>
-<form method="POST">
-    <div class="mb-3">
-        <label for="username" class="form-label">Username:</label>
-        <input type="text" name="username" id="username" class="form-control" required>
-    </div>
+<div class="container mt-5" style="max-width: 500px;">
+    <h2 class="mb-4 text-center">Register</h2>
 
-    <div class="mb-3">
-        <label for="email" class="form-label">Email:</label>
-        <input type="email" name="email" id="email" class="form-control" required>
-    </div>
+    <form method="POST" id="registerForm">
+        <div class="mb-3">
+            <label for="username" class="form-label">Username:</label>
+            <input type="text" name="username" id="username" class="form-control" required>
+            <div id="usernameFeedback" class="text-danger mt-1"></div>
+        </div>
 
-    <div class="mb-3">
-        <label for="password" class="form-label">Password:</label>
-        <input type="password" name="password" id="password" class="form-control" required>
-    </div>
+        <div class="mb-3">
+            <label for="email" class="form-label">Email:</label>
+            <input type="email" name="email" id="email" class="form-control" required>
+        </div>
 
-    <button type="submit" class="btn btn-primary">Register</button>
-    <a href="{{ url_for('auth.login') }}" class="btn btn-secondary">Cancel</a>
-</form>
+        <div class="mb-3">
+            <label for="password" class="form-label">Password:</label>
+            <input type="password" name="password" id="password" class="form-control" required>
+        </div>
 
-{% if error %}
-<p class="text-danger mt-2">{{ error }}</p>
-{% endif %}
+        <button type="submit" class="btn btn-primary w-100">Register</button>
+        <a href="{{ url_for('auth.login') }}" class="btn btn-secondary w-100 mt-2">Cancel</a>
+    </form>
+</div>
+
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script>
+$(document).ready(function() {
+    $('#username').on('blur', function() {
+        let username = $(this).val().trim();
+        if (username.length > 0) {
+            $.post("{{ url_for('auth.check_username') }}", {username: username})
+             .done(function(data) {
+                if (data.exists) {
+                    $('#usernameFeedback').text('Username đã tồn tại');
+                } else {
+                    $('#usernameFeedback').text('');
+                }
+             });
+        }
+    });
+
+    // Prevent submit if username exists
+    $('#registerForm').on('submit', function(e) {
+        if ($('#usernameFeedback').text() !== '') {
+            e.preventDefault();
+            alert('Vui lòng đổi username khác');
+        }
+    });
+});
+</script>
 {% endblock %}
