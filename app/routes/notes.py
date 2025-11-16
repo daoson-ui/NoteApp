@@ -1,5 +1,5 @@
-from flask import Blueprint, render_template, request, redirect, url_for, flash
-from flask_login import login_required, current_user
+from flask import Blueprint, render_template, request, redirect, url_for, flash # type: ignore
+from flask_login import login_required, current_user # type: ignore
 from app import db
 from app.models import Note, User, Tag
 from datetime import datetime, timedelta

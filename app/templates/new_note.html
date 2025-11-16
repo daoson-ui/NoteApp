@@ -1,29 +1,49 @@
 {% extends 'base.html' %}
+
 {% block title %}{{ 'Edit' if note else 'New' }} Note{% endblock %}
 
 {% block content %}
-<h2>{{ 'Edit' if note else 'Create New' }} Note</h2>
-<form method="POST">
-  <div class="mb-3">
-    <label for="title" class="form-label">Title</label>
-    <input type="text" class="form-control" name="title" id="title" value="{{ note.title if note else '' }}" required>
-  </div>
+<div class="container mt-4">
 
-  <div class="mb-3">
-    <label for="content" class="form-label">Content</label>
-    <textarea class="form-control" name="content" id="content" rows="5" required>{{ note.content if note else '' }}</textarea>
-  </div>
+    <h2 class="mb-4">{{ 'Edit' if note else 'Create New' }} Note</h2>
 
-  <div class="mb-3">
-    <label for="tags" class="form-label">Tags</label>
-    <select class="form-select" name="tags" id="tags" multiple>
-      {% for tag in tags %}
-        <option value="{{ tag.id }}" {% if note and tag in note.tags %}selected{% endif %}>{{ tag.name }}</option>
-      {% endfor %}
-    </select>
-  </div>
+    <form method="POST">
+        <!-- Title -->
+        <div class="mb-3">
+            <label for="title" class="form-label">Title</label>
+            <input type="text" class="form-control" name="title" id="title"
+                   value="{{ note.title if note else '' }}" required>
+        </div>
 
-  <button type="submit" class="btn btn-primary">{{ 'Update' if note else 'Create' }}</button>
-  <a href="{{ url_for('notes.home') }}" class="btn btn-secondary">Cancel</a>
-</form>
+        <!-- Content -->
+        <div class="mb-3">
+            <label for="content" class="form-label">Content</label>
+            <textarea class="form-control" name="content" id="content" rows="5" required>{{ note.content if note else '' }}</textarea>
+        </div>
+
+        <!-- Tags -->
+        <div class="mb-3">
+            <label for="tags" class="form-label">Tags</label>
+            <select class="form-select" name="tags" id="tags" multiple>
+                {% for tag in tags %}
+                    <option value="{{ tag.id }}" {% if note and tag in note.tags %}selected{% endif %}>
+                        {{ tag.name }}
+                    </option>
+                {% endfor %}
+            </select>
+        </div>
+
+        <!-- Buttons -->
+        <div class="d-flex gap-2">
+            <button type="submit" class="btn btn-primary">{{ 'Update' if note else 'Create' }}</button>
+
+            {% if current_user.is_admin %}
+                <a href="{{ url_for('notes.dashboard') }}" class="btn btn-secondary">Back</a>
+            {% else %}
+                <a href="{{ url_for('notes.home') }}" class="btn btn-secondary">Back</a>
+            {% endif %}
+        </div>
+
+    </form>
+</div>
 {% endblock %}

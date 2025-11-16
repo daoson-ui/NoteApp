@@ -1,30 +1,11 @@
-python run.py
-
-NOTEAPP/
-├─ app/
-│   ├─ routes/
-│   │   ├─ auth.py
-│   │   ├─ notes.py
-│   │   └─ tags.py
-│   ├─ static/
-│   ├─ templates/
-│   │   ├─ base.html
-│   │   ├─ dashboard.html
-│   │   ├─ edit_note.html
-│   │   ├─ home.html
-│   │   ├─ login.html
-│   │   ├─ new_note.html
-│   │   ├─ note_form.html
-│   │   ├─ register.html
-│   │   ├─ tag_form.html
-│   │   ├─ tag_list.html
-│   │   └─ view_note.html
-│   ├─ __init__.py
-│   ├─ admin.py
-│   └─ models.py
-├─ migrations/
-├─ static/
-├─ .env
-├─ config.py
-├─ requirements.txt
-└─ run.py
+Flask==3.0.3
+Flask-SQLAlchemy==3.1.1
+Flask-Migrate==4.0.5
+Flask-Login==0.6.3
+Werkzeug==3.0.2
+python-dotenv==1.0.1
+click==8.1.7
+itsdangerous==2.1.2
+Jinja2==3.1.4
+SQLAlchemy==2.0.29
+greenlet==3.0.3
