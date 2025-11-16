@@ -25,7 +25,10 @@ def dashboard():
         return redirect(url_for('notes.home'))
 
     users = User.query.all()
-    notes = Note.query.all()
+
+    # SORT ghi chú theo thời gian tạo mới nhất
+    notes = Note.query.order_by(Note.created_at.desc()).all()
+
     tags = Tag.query.all()
 
     return render_template(
@@ -39,7 +42,6 @@ def dashboard():
 # =============================
 # QUẢN LÝ USER
 # =============================
-
 @admin_bp.route('/user/new', methods=['GET', 'POST'])
 @login_required
 def create_user():
@@ -75,7 +77,6 @@ def delete_user(user_id):
 
     user = User.query.get_or_404(user_id)
 
-    # Không cho xóa admin chính
     if user.is_admin:
         flash("Không thể xóa tài khoản admin!")
         return redirect(url_for('admin.dashboard'))
@@ -90,7 +91,6 @@ def delete_user(user_id):
 # =============================
 # QUẢN LÝ TAG
 # =============================
-
 @admin_bp.route('/tag/new', methods=['GET', 'POST'])
 @login_required
 def create_tag():
