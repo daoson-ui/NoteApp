@@ -86,10 +86,14 @@
                     <td>{{ (note.created_at + timedelta(hours=7)).strftime('%d/%m/%Y %H:%M') }}</td>
                     <td>
                         <div class="d-flex justify-content-center gap-2">
-                            <a href="{{ url_for('notes.edit_note', note_id=note.id) }}" class="btn btn-warning btn-sm">Edit</a>
-                            <form action="{{ url_for('notes.delete_note', note_id=note.id) }}" method="POST" onsubmit="return confirm('Are you sure?');">
-                                <button type="submit" class="btn btn-danger btn-sm">Delete</button>
-                            </form>
+                            {% if note.user_id == current_user.id %}
+                                <a href="{{ url_for('notes.edit_note', note_id=note.id) }}" class="btn btn-warning btn-sm">Edit</a>
+                                <form action="{{ url_for('notes.delete_note', note_id=note.id) }}" method="POST" onsubmit="return confirm('Are you sure?');">
+                                    <button type="submit" class="btn btn-danger btn-sm">Delete</button>
+                                </form>
+                            {% else %}
+                                <span class="text-muted">No actions</span>
+                            {% endif %}
                         </div>
                     </td>
                 </tr>

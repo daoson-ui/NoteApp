@@ -1,5 +1,5 @@
-from flask import Blueprint, render_template, request, redirect, url_for, flash # type: ignore
-from flask_login import login_required, current_user # type: ignore
+from flask import Blueprint, render_template, request, redirect, url_for, flash  # type: ignore
+from flask_login import login_required, current_user  # type: ignore
 from app import db
 from app.models import Note, User, Tag
 from datetime import datetime, timedelta
@@ -116,9 +116,7 @@ def new_note():
         db.session.commit()
         flash("Note created successfully!", "success")
 
-        return redirect(url_for(
-            'notes.dashboard' if current_user.is_admin else 'notes.home'
-        ))
+        return redirect(url_for('notes.dashboard' if current_user.is_admin else 'notes.home'))
 
     return render_template('new_note.html', note=None, tags=tags)
 
@@ -137,7 +135,7 @@ def view_note(note_id):
     return render_template('view_note.html', note=note, timedelta=timedelta)
 
 # ==============================
-# 🔹 CHỈNH SỬA NOTE
+# 🔹 CHỈNH SỬA NOTE (CHỈ NGƯỜI TẠO MỚI ĐƯỢC)
 # ==============================
 @bp.route('/note/<int:note_id>/edit', methods=['GET', 'POST'])
 @login_required
@@ -145,16 +143,17 @@ def edit_note(note_id):
     note = Note.query.get_or_404(note_id)
     tags = Tag.query.all()
 
-    if note.user_id != current_user.id and not current_user.is_admin:
+    # Chỉ user tạo note mới được sửa
+    if note.user_id != current_user.id:
         flash("You are not allowed to edit this note.", "danger")
-        return redirect(url_for('notes.home'))
+        return redirect(url_for('notes.home') if not current_user.is_admin else url_for('notes.dashboard'))
 
     if request.method == 'POST':
         note.title = request.form.get('title', '').strip()
         note.content = request.form.get('content', '').strip()
 
         selected_tag_ids = request.form.getlist('tags')
-        note.tags = []  # Xóa tất cả tag cũ
+        note.tags = []
 
         for tag_id in selected_tag_ids:
             tag = Tag.query.get(int(tag_id))
@@ -164,29 +163,25 @@ def edit_note(note_id):
         db.session.commit()
         flash("Note updated!", "success")
 
-        return redirect(
-            url_for('notes.dashboard' if current_user.is_admin else 'notes.home')
-        )
+        return redirect(url_for('notes.home'))
 
     return render_template('new_note.html', note=note, tags=tags)
 
 # ==============================
-# 🔹 XÓA NOTE
+# 🔹 XÓA NOTE (CHỈ NGƯỜI TẠO MỚI ĐƯỢC)
 # ==============================
 @bp.route('/note/<int:note_id>/delete', methods=['POST'])
 @login_required
 def delete_note(note_id):
     note = Note.query.get_or_404(note_id)
 
-    if note.user_id != current_user.id and not current_user.is_admin:
+    # Chỉ user tạo note mới được xóa
+    if note.user_id != current_user.id:
         flash("You cannot delete this note.", "danger")
-        return redirect(url_for('notes.home'))
+        return redirect(url_for('notes.home') if not current_user.is_admin else url_for('notes.dashboard'))
 
     db.session.delete(note)
     db.session.commit()
 
     flash("Note deleted successfully!", "success")
-
-    return redirect(
-        url_for('notes.dashboard' if current_user.is_admin else 'notes.home')
-    )
+    return redirect(url_for('notes.home'))
